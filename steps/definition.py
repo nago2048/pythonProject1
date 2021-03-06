@@ -79,7 +79,8 @@ def step_impl(context, value):
 @step("Verify that Watchlist link is visible")
 def step_impl(context):
     watchlist = context.driver.find_element_by_xpath("//a[@title='Watchlist']")
-    watchlist.click()
+    if not watchlist.is_displayed():
+        raise Exception("Test failed")
 
 
 @step("Verify that Watchlist link is not visible")
