@@ -76,15 +76,34 @@ def step_impl(context, value):
     sleep(2)
 
 
-@step("Verify that Watchlist link is visible")
-def step_impl(context):
-    watchlist = context.driver.find_element_by_xpath("//a[@title='Watchlist']")
+@step('Verify that "{text}" link is visible in header')
+def step_impl(context, text):
+    watchlist = context.driver.find_element_by_xpath(f"//*[contains(@title, '{text}') or contains(text(), '{text}')]")
     if not watchlist.is_displayed():
         raise Exception("Test failed")
 
 
-@step("Verify that Watchlist link is not visible")
-def step_impl(context):
-    watchlist = context.driver.find_element_by_xpath("//a[@title='Watchlist']")
+@step('Verify that "{text}" link is not visible in header')
+def step_impl(context, text):
+    watchlist = context.driver.find_element_by_xpath(f"//*[contains(@title, '{text}') or contains(text(), '{text}')]")
     if watchlist.is_displayed():
         raise Exception("Test failed")
+
+
+@step('Click on "{text}" link in header')
+def step_impl(context, text):
+    link = context.driver.find_element_by_xpath(f"//*[contains(@class, 'gh-') and contains(text(),'{text}')]")
+    link.click()
+    sleep(2)
+
+
+@step("Go back")
+def step_impl(context):
+    context.driver.back()
+
+
+@step('Filter results by "{par1}" and "{par2}" and "{par3}" and print results')
+def step_impl(context, par1, par2, par3):
+    results_list = context.driver.find_elements_by_xpath(f"//li[@class='s-item    '][.//span[text()='{par1}']][.//span[text()='{par2}']][.//span[text()='{par3}']]")
+    for x in results_list:
+        print(x)
