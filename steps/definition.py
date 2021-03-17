@@ -3,6 +3,7 @@ from selenium import webdriver
 from time import sleep
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
+import warnings
 
 eBay = "https://www.ebay.com/"
 eBay_deals = "https://www.ebay.com/deals"
@@ -107,3 +108,33 @@ def step_impl(context, par1, par2, par3):
     results_list = context.driver.find_elements_by_xpath(f"//li[@class='s-item    '][.//span[text()='{par1}']][.//span[text()='{par2}']][.//span[text()='{par3}']]")
     for x in results_list:
         print(x)
+
+
+@step('Verify that "{text}" in results in {n:d} pages')
+def step_impl(context, text, n):
+    current_page = 1
+    mismatches = []
+    while current_page <= n:
+        result_items = context.driver.find_elements_by_xpath("//li[starts-with(@class,'s-item')]//h3")
+        mismatches_local = 0
+        for i in result_items:
+            if text.lower() not in i.text.lower():
+                mismatches.append(' >>>  mismatch on page ' + str(current_page) + " >>> " + i.text)
+                mismatches_local += 1
+        if mismatches_local > 35:
+            raise Exception("Early fail")
+        current_page += 1
+        if current_page <= n:
+            arrow = context.driver.find_element_by_xpath("//a[@type='next']")
+            arrow.click()
+
+    if len(mismatches) > n*2.5:
+        for i in mismatches:
+            print(i)
+        raise Exception("fail")
+    elif len(mismatches) > 0:
+        for i in mismatches:
+            print(i)
+            warnings.warn('>>>>>> Normal amount of mismatches')
+    else:
+        print("No mismatches")

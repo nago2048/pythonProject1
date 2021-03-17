@@ -7,6 +7,12 @@ Feature: eBay Regression
     And Search by click
     Then Verify that "Dress" in results
 
+   Scenario: Testing Search functionality multiple pages
+    Given Navigate to eBay
+    And Type "Shoes" in search input
+    And Search by click
+    Then Verify that "Sdhoes" in results in 20 pages
+
 
   Scenario:  Testing Search functionality (enter)
     Given Navigate to eBay
