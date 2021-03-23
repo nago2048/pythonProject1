@@ -15,7 +15,6 @@ eBay_help = "https://www.ebay.com/help/home"
 def test(context):
     context.driver = webdriver.Chrome()
     context.driver.get(eBay)
-# !!!!without "context.driver" each step opens new browser!!!
 
 
 @step('Type "{text}" in search input')
@@ -51,11 +50,13 @@ def step_impl(context):
     search_input.send_keys(Keys.ENTER)
 
 
-@step("Hover all navigation elements")
+@step("Maximize window")
 def step_impl(context):
     context.driver.maximize_window()
-    sleep(5)
 
+
+@step("Hover all navigation elements")
+def step_impl(context):
     sign_in = context.driver.find_element_by_xpath("//a[contains(text(),'Sign in')]")
     register = context.driver.find_element_by_xpath("//a[contains(text(),'register')]")
     daily_deals = context.driver.find_element_by_xpath("//a[contains(text(),'Daily Deals') and @class='gh-p']")
@@ -138,3 +139,37 @@ def step_impl(context, text, n):
             warnings.warn('>>>>>> Normal amount of mismatches')
     else:
         print("No mismatches")
+
+
+@step('filter by "{var1}" in "{var2}" category')
+def step_impl(context, var1, var2):
+
+    cb1 = context.driver.find_elements_by_xpath(f"//li[@name='{var2}']//input[@aria-label='{var1}']") #don't cover all
+    cb2 = context.driver.find_elements_by_xpath(f"//li[@class='x-refine__main__list '][.//h3[text()='{var2}']]//div[@class='x-refine__select__svg'][.//span[text()='{var1}']]//input")
+    for i in cb2:
+        i.click()
+
+    if not cb2:
+        raise Exception("fail")
+
+
+@step("Apply following filters")
+def step_impl(context):
+    for y in context.table.rows:
+        var2 = y['Filter :']
+        var1 = y['value :']
+
+        category_btn = context.driver.find_elements_by_xpath(f"//li[@class='x-refine__main__list '][.//h3[text()='{var2}']]//div[@aria-expanded='false']")
+
+        if not category_btn:
+            cb = context.driver.find_elements_by_xpath(f"//li[@class='x-refine__main__list '][.//h3[text()='{var2}']]//div[@class='x-refine__select__svg'][.//span[text()='{var1}']]//input")
+            for i in cb:
+                i.click()
+        else:
+            category_btn[0].click()
+            sleep(1)
+            cb = context.driver.find_elements_by_xpath(
+                f"//li[@class='x-refine__main__list '][.//h3[text()='{var2}']]//div[@class='x-refine__select__svg'][.//span[text()='{var1}']]//input")
+            for i in cb:
+                i.click()
+

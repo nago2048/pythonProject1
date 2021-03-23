@@ -1,40 +1,40 @@
 Feature: eBay Regression
 
-  #---------Search-----------
-  Scenario: Testing Search functionality (click)
+  Background: Open eBay
     Given Navigate to eBay
+
+  @search
+  Scenario: Testing Search functionality (click)
     And Type "Dress" in search input
     And Search by click
     Then Verify that "Dress" in results
 
-   Scenario: Testing Search functionality multiple pages
-    Given Navigate to eBay
+  @search
+  Scenario: Testing Search functionality multiple pages
     And Type "Shoes" in search input
     And Search by click
-    Then Verify that "Sdhoes" in results in 20 pages
+    Then Verify that "Shoes" in results in 2 pages
 
-
+  @search
   Scenario:  Testing Search functionality (enter)
-    Given Navigate to eBay
     And Type "Dress" in search input
     And Search by enter
     Then Verify that "Dress" in results
 
-
+  @search
   Scenario:  Testing Search functionality negative
-    Given Navigate to eBay
     And Type "Dress" in search input
     And Search by enter
     Then Verify that "Fishing rod" not in results
 
-  #---------Navigation-----------
+
+  @navigation
   Scenario: Verify if all navigation elements present
-    Given Navigate to eBay
+    And Maximize window
     Then Hover all navigation elements
 
-
+  @navigation
   Scenario: Verify that Watchlist link is not visible if window width less then 1009 px
-    Given Navigate to eBay
     Then Change width to "1009"
     Then Verify that "Watchlist" link is visible in header
     Then Verify that " Brand Outlet" link is visible in header
@@ -42,8 +42,8 @@ Feature: eBay Regression
     Then Verify that "Watchlist" link is not visible in header
     Then Verify that " Brand Outlet" link is not visible in header
 
+  @navigation
   Scenario: Verify all navigation links
-    Given Navigate to eBay
     Then Click on "Daily Deals" link in header
     Then Go back
     Then Click on "Sell" link in header
@@ -54,9 +54,48 @@ Feature: eBay Regression
     Then Go back
 
 
-  #--------------Item sorting-------------
+  @filter
   Scenario: Just sort shoes
-    Given Navigate to eBay
     Then Type "Shoes" in search input
     Then Search by enter
     Then Filter results by "25% off $30+" and "Free shipping" and "Free returns" and print results
+
+  @filter
+  Scenario: Verify that filter works
+    And Type "Shoes" in search input
+    And Search by click
+    And filter by "New with tags" in "Condition" category
+
+  @filter
+  Scenario: Verify that filter works with multiple parameters
+    And Type "Shoes" in search input
+    And Search by click
+    And filter by "adidas" in "Brand" category
+    And filter by "New with tags" in "Condition" category
+    And filter by "Comfort" in "Features" category
+
+  @filter
+  Scenario: Verify that filter works with multiple parameters from table
+    And Type "Shoes" in search input
+    And Search by click
+    And Apply following filters
+    | Filter :  | value :       |
+    | Brand     | adidas        |
+    | Features  | Comfort       |
+    | Condition | New with tags |
+
+  @filter
+  Scenario Outline: Verify that filter works with multiple parameters from table outline
+    And Type "<search_item>" in search input
+    And Search by click
+    And Apply following filters
+    | Filter :       | value :           |
+    | <filter_name1>  | <filter_value1>    |
+    | <filter_name2>  | <filter_value2>    |
+    | <filter_name3>  | <filter_value3>    |
+
+
+    Examples:
+    | search_item | filter_name1 | filter_value1 | filter_name2 | filter_value2 | filter_name3 | filter_value3  |
+    |   shoes     |  Brand       | adidas        |   Features   |    Comfort    |  Condition   |  New with tags |
+    |   dress      | Brand       | Calvin Klein  | Dress Length |     Long      |   Item Location   |  US Only  |
