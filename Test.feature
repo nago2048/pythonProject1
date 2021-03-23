@@ -75,7 +75,7 @@ Feature: eBay Regression
     And filter by "Comfort" in "Features" category
 
   @filter
-  Scenario: Verify that filter works with multiple parameters from table
+  Scenario: Verify that filter works from table
     And Type "Shoes" in search input
     And Search by click
     And Apply following filters
@@ -85,7 +85,7 @@ Feature: eBay Regression
     | Condition | New with tags |
 
   @filter
-  Scenario Outline: Verify that filter works with multiple parameters from table outline
+  Scenario Outline: Verify that filter works with table outline
     And Type "<search_item>" in search input
     And Search by click
     And Apply following filters
