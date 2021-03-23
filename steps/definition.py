@@ -167,7 +167,6 @@ def step_impl(context):
                 i.click()
         else:
             category_btn[0].click()
-            sleep(1)
             cb = context.driver.find_elements_by_xpath(
                 f"//li[@class='x-refine__main__list '][.//h3[text()='{var2}']]//div[@class='x-refine__select__svg'][.//span[text()='{var1}']]//input")
             for i in cb:

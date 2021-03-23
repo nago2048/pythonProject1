@@ -89,13 +89,13 @@ Feature: eBay Regression
     And Type "<search_item>" in search input
     And Search by click
     And Apply following filters
-    | Filter :       | value :           |
+    | Filter :       | value :             |
     | <filter_name1>  | <filter_value1>    |
     | <filter_name2>  | <filter_value2>    |
     | <filter_name3>  | <filter_value3>    |
 
 
     Examples:
-    | search_item | filter_name1 | filter_value1 | filter_name2 | filter_value2 | filter_name3 | filter_value3  |
-    |   shoes     |  Brand       | adidas        |   Features   |    Comfort    |  Condition   |  New with tags |
-    |   dress      | Brand       | Calvin Klein  | Dress Length |     Long      |   Item Location   |  US Only  |
+    | search_item | filter_name1 | filter_value1 | filter_name2 | filter_value2 | filter_name3  | filter_value3  |
+    |   shoes     |  Brand       | adidas        |   Features   |    Comfort    |  Condition    |  New with tags |
+    |   dress     |  Brand       | Calvin Klein  | Dress Length |     Long      | Item Location |  US Only       |
