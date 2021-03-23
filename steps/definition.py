@@ -144,10 +144,19 @@ def step_impl(context, text, n):
 @step('filter by "{var1}" in "{var2}" category')
 def step_impl(context, var1, var2):
 
+    category_btn = context.driver.find_elements_by_xpath(f"//li[@class='x-refine__main__list '][.//h3[text()='{var2}']]//div[@aria-expanded='false']")
 
-    cb = context.driver.find_elements_by_xpath(f"//li[@class='x-refine__main__list '][.//h3[text()='{var2}']]//div[@class='x-refine__select__svg'][.//span[text()='{var1}']]//input")
-    for i in cb:
-        i.click()
+    if not category_btn:
+        cb = context.driver.find_elements_by_xpath(
+            f"//li[@class='x-refine__main__list '][.//h3[text()='{var2}']]//div[@class='x-refine__select__svg'][.//span[text()='{var1}']]//input")
+        for i in cb:
+            i.click()
+    else:
+        category_btn[0].click()
+        cb = context.driver.find_elements_by_xpath(
+            f"//li[@class='x-refine__main__list '][.//h3[text()='{var2}']]//div[@class='x-refine__select__svg'][.//span[text()='{var1}']]//input")
+        for i in cb:
+            i.click()
 
     if not cb:
         raise Exception("fail")
