@@ -35,10 +35,10 @@ Feature: eBay Regression
 
   @navigation
   Scenario: Verify that Watchlist link is not visible if window width less then 1009 px
-    Then Change width to "1009"
+    Then Change window size to "1009" x "800"
     Then Verify that "Watchlist" link is visible in header
     Then Verify that " Brand Outlet" link is visible in header
-    Then Change width to "1008"
+    Then Change window size to "1008" x "800"
     Then Verify that "Watchlist" link is not visible in header
     Then Verify that " Brand Outlet" link is not visible in header
 
@@ -99,3 +99,7 @@ Feature: eBay Regression
     | search_item | filter_name1 | filter_value1 | filter_name2 | filter_value2 | filter_name3  | filter_value3  |
     |   shoes     |  Brand       | adidas        |   Features   |    Comfort    |  Condition    |  New with tags |
     |   dress     |  Brand       | Calvin Klein  | Dress Length |     Long      | Item Location |  US Only       |
+
+  @other
+    Scenario: Underline testing
+      And I hover on element and check if it has css property underline

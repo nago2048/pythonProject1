@@ -1,20 +1,19 @@
 from behave import step
-from selenium import webdriver
-from time import sleep
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
-import warnings
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as ec
 
-eBay = "https://www.ebay.com/"
-eBay_deals = "https://www.ebay.com/deals"
-eBay_bo = "https://www.ebay.com/b/Brand-Outlet/bn_7115532402"
-eBay_help = "https://www.ebay.com/help/home"
+
+
+
 
 
 @step('Navigate to eBay')
 def test(context):
-    context.driver = webdriver.Chrome()
-    context.driver.get(eBay)
+
+    context.driver.get(context.url)
 
 
 @step('Type "{text}" in search input')
@@ -72,10 +71,9 @@ def step_impl(context):
     action.move_to_element(sign_in).move_to_element(register).move_to_element(daily_deals).move_to_element(brand_outlet).move_to_element(help_and_contact).move_to_element(sell).move_to_element(watchlist).move_to_element(my_ebay).move_to_element(alrt).move_to_element(cart).perform()
 
 
-@step('Change width to "{value}"')
-def step_impl(context, value):
-    context.driver.set_window_size(value, 800)
-    sleep(2)
+@step('Change window size to "{w}" x "{h}"')
+def step_impl(context, w, h):
+    context.driver.set_window_size(w, h)
 
 
 @step('Verify that "{text}" link is visible in header')
@@ -96,7 +94,6 @@ def step_impl(context, text):
 def step_impl(context, text):
     link = context.driver.find_element_by_xpath(f"//*[contains(@class, 'gh-') and contains(text(),'{text}')]")
     link.click()
-    sleep(2)
 
 
 @step("Go back")
@@ -134,9 +131,11 @@ def step_impl(context, text, n):
             print(i)
         raise Exception("fail")
     elif len(mismatches) > 0:
+        print('>>>>>> Normal amount of mismatches ('+str(len(mismatches))+') :')
+
         for i in mismatches:
             print(i)
-            warnings.warn('>>>>>> Normal amount of mismatches')
+
     else:
         print("No mismatches")
 
@@ -180,4 +179,22 @@ def step_impl(context):
                 f"//li[@class='x-refine__main__list '][.//h3[text()='{var2}']]//div[@class='x-refine__select__svg'][.//span[text()='{var1}']]//input")
             for i in cb:
                 i.click()
+
+
+@step("I hover on element and check if it has css property {prop}")
+def step_impl(context, prop):
+    action = ActionChains(context.driver)
+
+    element = WebDriverWait(context.driver, 5).until(ec.presence_of_element_located((By.XPATH, "//li[@class='hl-popular-destinations-element'][1]")))
+    element2 = WebDriverWait(context.driver, 5).until(ec.presence_of_element_located((By.XPATH, "//li[@class='hl-popular-destinations-element'][2]")))
+
+    action.move_to_element(element).perform()
+    text_element = context.driver.find_element_by_xpath("//li[@class='hl-popular-destinations-element'][1]//h3")
+    val = text_element.value_of_css_property("text-decoration")
+    action.move_to_element(element2).perform()
+
+    if prop not in val:
+        raise Exception("Fail")
+
+
 
