@@ -17,7 +17,7 @@ def before_step(context, step):
 def after_step(context, step):
     if step.status == "failed":
         file_name = re.sub('[^a-zA-z0-9 \n\.]', '', step.name)
-        context.driver.save_screenshot(f'./Screenshots/{file_name}.png')
+        context.driver.save_screenshot(f'./screenshots/{file_name}.png')
 
 
 def after_scenario(context, scenario):

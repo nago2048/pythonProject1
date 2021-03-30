@@ -4,6 +4,8 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
+from time import sleep
+from collections import defaultdict
 
 
 
@@ -162,7 +164,7 @@ def step_impl(context, var1, var2):
 
 
 @step("Apply following filters")
-def step_impl(context):
+def step_impl_table(context):
     for y in context.table.rows:
         var2 = y['Filter :']
         var1 = y['value :']
@@ -179,6 +181,8 @@ def step_impl(context):
                 f"//li[@class='x-refine__main__list '][.//h3[text()='{var2}']]//div[@class='x-refine__select__svg'][.//span[text()='{var1}']]//input")
             for i in cb:
                 i.click()
+       # sleep(5)
+
 
 
 @step("I hover on element and check if it has css property {prop}")
@@ -195,6 +199,64 @@ def step_impl(context, prop):
 
     if prop not in val:
         raise Exception("Fail")
+
+
+@step("I perform verification")
+def step_impl(context):
+    current_tab = context.driver.current_window_handle
+    items_dict = []
+    items_list = context.driver.find_elements_by_xpath("//li[contains(@class,'s-item    ')]")
+
+    for item in items_list:
+        link = item.find_element_by_xpath("descendant::a").get_attribute('href')
+        text = item.find_element_by_xpath("descendant::h3").text
+        k = (link, text)
+        items_dict.append(k)
+
+    for link, text in items_dict:
+        context.driver.execute_script(f'window.open("{link}","_blank");')
+
+        context.driver.switch_to.window(context.driver.window_handles[-1])
+
+        # validation
+        label = context.driver.find_elements_by_xpath("//div[@class='itemAttr']//td[@class='attrLabels']")
+        value = context.driver.find_elements_by_xpath("//div[@class='itemAttr']//td[@class='attrLabels']/following-sibling::td[.//*[text()]]")
+
+        spec_dict = dict(zip(label, value))
+
+        labels = list(spec_dict.keys())
+        values = list(spec_dict.values())
+
+        spec_list_text = []
+        for i in range(0, len(spec_dict)):
+            lab = labels[i].text
+            val = values[i].text
+            k = (lab, val)
+            spec_list_text.append(k)
+        spec_dict_text = dict(spec_list_text)  # from list of dict to dict
+        # print(spec_dict_text)
+
+        for y in context.table.rows:
+
+            var2 = y['Filter :']+':'
+            var1 = y['value :']
+            if spec_dict_text.get(var2):
+                if var1.lower() not in spec_dict_text.get(var2).lower():
+                    print(context.driver.current_url)
+                    raise Exception("Fail: Filter name present, filter value don't")
+
+                else:
+                    print("+")
+            else:
+                print("fail: no Filter name in spec")
+                print(context.driver.current_url)
+                # raise Exception("Fail")
+
+        context.driver.close()
+        context.driver.switch_to.window(current_tab)
+
+
+
 
 
 

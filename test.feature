@@ -101,5 +101,21 @@ Feature: eBay Regression
     |   dress     |  Brand       | Calvin Klein  | Dress Length |     Long      | Item Location |  US Only       |
 
   @other
-    Scenario: Underline testing
-      And I hover on element and check if it has css property underline
+  Scenario: Underline testing
+    And I hover on element and check if it has css property underline
+
+
+  Scenario: filtering in another tab
+    And Type "Shoes" in search input
+    And Search by click
+    And Apply following filters
+    | Filter :       | value :       |
+    | Brand          | adidas        |
+    | Features       | Comfort       |
+    | Upper Material | Leather       |
+    And I perform verification
+    | Filter :       | value :       |
+    | Brand          | adidas        |
+    | Features       | Comfort       |
+    | Upper Material | Leather       |
+
