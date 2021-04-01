@@ -5,11 +5,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from time import sleep
-from collections import defaultdict
-
-
-
-
 
 
 @step('Navigate to eBay')
@@ -165,7 +160,9 @@ def step_impl(context, var1, var2):
 
 @step("Apply following filters")
 def step_impl_table(context):
-    for y in context.table.rows:
+    context.my_table = context.table
+
+    for y in context.my_table.rows:
         var2 = y['Filter :']
         var1 = y['value :']
 
@@ -181,7 +178,7 @@ def step_impl_table(context):
                 f"//li[@class='x-refine__main__list '][.//h3[text()='{var2}']]//div[@class='x-refine__select__svg'][.//span[text()='{var1}']]//input")
             for i in cb:
                 i.click()
-       # sleep(5)
+        # sleep(5)
 
 
 
@@ -236,7 +233,7 @@ def step_impl(context):
         spec_dict_text = dict(spec_list_text)  # from list of dict to dict
         # print(spec_dict_text)
 
-        for y in context.table.rows:
+        for y in context.my_table.rows:
 
             var2 = y['Filter :']+':'
             var1 = y['value :']
@@ -244,7 +241,6 @@ def step_impl(context):
                 if var1.lower() not in spec_dict_text.get(var2).lower():
                     print(context.driver.current_url)
                     raise Exception("Fail: Filter name present, filter value don't")
-
                 else:
                     print("+")
             else:

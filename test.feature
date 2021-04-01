@@ -114,8 +114,5 @@ Feature: eBay Regression
     | Features       | Comfort       |
     | Upper Material | Leather       |
     And I perform verification
-    | Filter :       | value :       |
-    | Brand          | adidas        |
-    | Features       | Comfort       |
-    | Upper Material | Leather       |
+
 
